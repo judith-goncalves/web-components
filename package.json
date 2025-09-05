@@ -1,0 +1,15 @@
+{
+  "name": "web-components-main",
+  "version": "1.0.0",
+  "description": "Simple web component practice   - Fetched data on API   - Displayed data on table or grid   - Button to display detail modal",
+  "main": "pokemon-app.js",
+  "scripts": {
+    "build": "esbuild pokemon-app.js --bundle --outfile=dist/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.25.9"
+  }
+}

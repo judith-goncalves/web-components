@@ -1,3 +1,7 @@
+import "./components/pokemon-card.js";
+import "./components/pokemon-grid.js";
+import "./components/pokemon-table.js";
+
 class PokemonApp extends HTMLElement {
   constructor() {
     super();
@@ -100,11 +104,11 @@ class PokemonApp extends HTMLElement {
       <div class="actions">
         <button class="${
           this.view === "table" ? "active" : ""
-        }" id="btnTable"><img src="images/table-view.png" alt="Table View" width="30" height="40"></button>
+        }" id="btnTable"><img src="images/table-view.png" alt="Table View" width="30" height="40" loading="lazy"></button>
       
         <button class="${
           this.view === "grid" ? "active" : ""
-        }" id="btnGrid"><img src="images/grid-view.png" alt="Grid View" width="30" height="30"></button>
+        }" id="btnGrid"><img src="images/grid-view.png" alt="Grid View" width="30" height="30" loading="lazy"></button>
       </div>
     
       <div class="content"></div>
