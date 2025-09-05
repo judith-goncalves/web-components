@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokemon App - Web Components</title>
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+</head>
+
+<body>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: url('images/pokemon-bg.jpg') no-repeat center fixed;
+      background-size: cover;
+    }
+
+    .container {
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .container img {
+      max-width: 100%;
+      height: auto;
+      filter: drop-shadow(0px 8px 8px rgba(0, 0, 0, 0.4));
+    }
+
+    pokemon-app {
+      display: block;
+      margin: 1rem;
+    }
+  </style>
+  <div class="container">
+    <img src="images/pokemon-logo.png" alt="Pokemon Logo" width="400" height="150">
+  </div>
+
+  <pokemon-app></pokemon-app>
+
+
+  <script src="./dist/app.js"></script>
+</body>
+
+</html>
