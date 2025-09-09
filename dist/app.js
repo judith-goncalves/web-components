@@ -106,7 +106,7 @@
           <div class="pokemon-card">
           <span class="closeCard">x</span>
           <h2>#${pokemon.id} ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h2>
-          <img src="${pokemon.image}" alt="${pokemon.name}" width="150" height="150"/>
+          <img src="${pokemon.image}" alt="${pokemon.name}" width="150" height="150" loading="lazy"/>
       <div class="pokemon-data">
           <p>Height: ${pokemon.height} | Weight: ${pokemon.weight}</p>
           <p>Type(s): ${pokemon.types.flatMap((t) => t.charAt(0).toUpperCase() + t.slice(1)).join(", ")}</p>
@@ -137,11 +137,19 @@
     constructor() {
       super();
       this.attachShadow({ mode: "open" });
-      this._data = [];
     }
-    set data(values) {
-      this._data = values;
-      this.render();
+    // set data(values) {
+    //   this._data = values;
+    //   this.render();
+    // }
+    static get observedAttributes() {
+      return ["data"];
+    }
+    attributeChangedCallback(name, oldValue, newValue) {
+      if (name === "data") {
+        this._data = JSON.parse(newValue);
+        this.render();
+      }
     }
     render() {
       const pokemons = this._data;
@@ -211,7 +219,7 @@
         (pokemon) => `
           <div class="pokemon-card">
           <h4>#${pokemon.id}</h4>
-            <img src="${pokemon.imageIcon}" alt="${pokemon.name}">
+            <img src="${pokemon.imageIcon}" alt="${pokemon.name}" loading="lazy">
             <h2>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h2>
             <p>Type(s): ${pokemon.types.flatMap((t) => t.charAt(0).toUpperCase() + t.slice(1)).join(", ")}</p>
             <div class="pokemon-info">
@@ -244,11 +252,19 @@
     constructor() {
       super();
       this.attachShadow({ mode: "open" });
-      this.pokemons = [];
     }
-    set data(values) {
-      this._data = values;
-      this.render();
+    // set data(values) {
+    //   this._data = values;
+    //   this.render();
+    // }
+    static get observedAttributes() {
+      return ["data"];
+    }
+    attributeChangedCallback(name, oldValue, newValue) {
+      if (name === "data") {
+        this._data = JSON.parse(newValue);
+        this.render();
+      }
     }
     render() {
       const pokemons = this._data;
@@ -331,8 +347,8 @@
             <td>${p.types.flatMap((t) => t.charAt(0).toUpperCase() + t.slice(1)).join(" | ")}</td>
             <td>${p.height}</td>
             <td>${p.weight}</td>
-            <td><img src="${p.imageIcon}" alt="${p.name}" width="40" height="40"></td> 
-            <td><button class="see-detail" data-id="${p.id}"><img src="images/see-detail.png" width="25" height="25" alt="Pokedex"></button></td> 
+            <td><img src="${p.imageIcon}" alt="${p.name}" width="40" height="40" loading="lazy"></td> 
+            <td><button class="see-detail" data-id="${p.id}"><img src="images/see-detail.png" width="25" height="25" alt="Pokedex" loading="lazy"></button></td> 
             </tr>
           `
       ).join("")}
@@ -367,6 +383,15 @@
       await this.fetchPokemons();
       this.render();
     }
+    static get observedAttributes() {
+      return ["view"];
+    }
+    attributeChangedCallback(name, oldValue, newValue) {
+      if (name === "view" && oldValue !== newValue) {
+        this.view = newValue;
+        this.render();
+      }
+    }
     async fetchPokemons() {
       try {
         const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=9");
@@ -398,10 +423,10 @@
         console.error("Error fetching pokemons:", error);
       }
     }
-    toggleView(view) {
-      this.view = view;
-      this.render();
-    }
+    // toggleView(view) {
+    //   this.view = view;
+    //   this.render();
+    // }
     showDetail(pokemon) {
       const modal = document.createElement("pokemon-card");
       modal.data = pokemon;
@@ -409,13 +434,13 @@
     }
     renderTable(content) {
       const table = document.createElement("pokemon-table");
-      table.data = this.pokemons;
+      table.setAttribute("data", JSON.stringify(this.pokemons));
       table.addEventListener("detail", (e) => this.showDetail(e.detail));
       content.appendChild(table);
     }
     renderList(content) {
       const grid = document.createElement("pokemon-grid");
-      grid.data = this.pokemons;
+      grid.setAttribute("data", JSON.stringify(this.pokemons));
       grid.addEventListener("detail", (e) => this.showDetail(e.detail));
       content.appendChild(grid);
     }
@@ -450,15 +475,15 @@
 
       </style>
       <div class="actions">
-        <button class="${this.view === "table" ? "active" : ""}" id="btnTable"><img src="images/table-view.png" alt="Table View" width="30" height="40"></button>
+        <button class="${this.view === "table" && "active"}" id="btnTable"><img src="images/table-view.png" alt="Table View" width="30" height="40" loading="lazy"></button>
       
-        <button class="${this.view === "grid" ? "active" : ""}" id="btnGrid"><img src="images/grid-view.png" alt="Grid View" width="30" height="30"></button>
+        <button class="${this.view === "grid" && "active"}" id="btnGrid"><img src="images/grid-view.png" alt="Grid View" width="30" height="30" loading="lazy"></button>
       </div>
     
       <div class="content"></div>
     `;
-      this.shadowRoot.querySelector("#btnTable").onclick = () => this.toggleView("table");
-      this.shadowRoot.querySelector("#btnGrid").onclick = () => this.toggleView("grid");
+      this.shadowRoot.querySelector("#btnTable").onclick = () => this.setAttribute("view", "table");
+      this.shadowRoot.querySelector("#btnGrid").onclick = () => this.setAttribute("view", "grid");
       const content = this.shadowRoot.querySelector(".content");
       if (this.view === "table") {
         this.renderTable(content);

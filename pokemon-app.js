@@ -9,9 +9,22 @@ class PokemonApp extends HTMLElement {
     this.view = "table";
     this.pokemons = [];
   }
+
   async connectedCallback() {
     await this.fetchPokemons();
+
     this.render();
+  }
+
+  static get observedAttributes() {
+    return ["view"];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "view" && oldValue !== newValue) {
+      this.view = newValue;
+      this.render();
+    }
   }
 
   async fetchPokemons() {
@@ -46,10 +59,10 @@ class PokemonApp extends HTMLElement {
     }
   }
 
-  toggleView(view) {
-    this.view = view;
-    this.render();
-  }
+  // toggleView(view) {
+  //   this.view = view;
+  //   this.render();
+  // }
 
   showDetail(pokemon) {
     const modal = document.createElement("pokemon-card");
@@ -59,14 +72,16 @@ class PokemonApp extends HTMLElement {
 
   renderTable(content) {
     const table = document.createElement("pokemon-table");
-    table.data = this.pokemons; //setter
+    // table.data = this.pokemons; //setter
+    table.setAttribute("data", JSON.stringify(this.pokemons));
     table.addEventListener("detail", (e) => this.showDetail(e.detail));
     content.appendChild(table);
   }
 
   renderList(content) {
     const grid = document.createElement("pokemon-grid");
-    grid.data = this.pokemons; //setter
+    // grid.data = this.pokemons; //setter
+    grid.setAttribute("data", JSON.stringify(this.pokemons));
     grid.addEventListener("detail", (e) => this.showDetail(e.detail));
     content.appendChild(grid);
   }
@@ -103,11 +118,11 @@ class PokemonApp extends HTMLElement {
       </style>
       <div class="actions">
         <button class="${
-          this.view === "table" ? "active" : ""
+          this.view === "table" && "active"
         }" id="btnTable"><img src="images/table-view.png" alt="Table View" width="30" height="40" loading="lazy"></button>
       
         <button class="${
-          this.view === "grid" ? "active" : ""
+          this.view === "grid" && "active"
         }" id="btnGrid"><img src="images/grid-view.png" alt="Grid View" width="30" height="30" loading="lazy"></button>
       </div>
     
@@ -115,9 +130,9 @@ class PokemonApp extends HTMLElement {
     `;
 
     this.shadowRoot.querySelector("#btnTable").onclick = () =>
-      this.toggleView("table");
+      this.setAttribute("view", "table");
     this.shadowRoot.querySelector("#btnGrid").onclick = () =>
-      this.toggleView("grid");
+      this.setAttribute("view", "grid");
 
     const content = this.shadowRoot.querySelector(".content");
     if (this.view === "table") {

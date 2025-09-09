@@ -2,11 +2,22 @@ class PokemonTable extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
-    this.pokemons = [];
   }
-  set data(values) {
-    this._data = values;
-    this.render();
+
+  // set data(values) {
+  //   this._data = values;
+  //   this.render();
+  // }
+
+  static get observedAttributes() {
+    return ["data"];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "data") {
+      this._data = JSON.parse(newValue);
+      this.render();
+    }
   }
   render() {
     const pokemons = this._data;
